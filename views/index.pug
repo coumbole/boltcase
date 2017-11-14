@@ -1,5 +1,18 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    div.section
+        div.container
+            div
+                button.button Sort by name
+                button.button Sort by population
+                button.button Sort by area
+                button.button Only English speaking countries
+            div
+                ul
+                    if countrydata
+                        each country in countrydata
+                            a(href="country/" + country.alpha3Code.toLowerCase())
+                                li= country.name
+                    else
+                        li No countries
