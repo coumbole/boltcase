@@ -10,8 +10,8 @@ block content
                 button.button Only English speaking countries
             div
                 ul
-                    if countrydata
-                        each country in countrydata
+                    if data
+                        each country in data
                             a(href="country/" + country.alpha3Code.toLowerCase())
                                 li= country.name
                     else

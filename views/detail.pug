@@ -1,0 +1,22 @@
+extends layout
+
+block content
+    if current
+        div.section
+            div.container
+                a(href="/")
+                    p Home
+                br
+                h1.title.is-1= current.name
+                figure.image.is-128x128
+                    img(src=current.flag, alt="Flag")
+                if borders
+                    h3 Neighbours:
+                        ul
+                            each country in borders
+                                a(href="/country/" + country.alpha3Code.toLowerCase())
+                                    li= country.name
+
+
+    else
+        h1 Error
