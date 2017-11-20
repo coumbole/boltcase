@@ -108,11 +108,12 @@ router.post('/country/:id/', (req, res, next) => {
                 /* Instead of the 3 letter codes, we want the countries'
                  * full names. Furthermore, instead of an array like
                  * ['Finland', 'Norway'] we want a string such as
-                 * 'Finland -> Norway'.
-                 */
-                const route = path.map( (node) => {
-                    return countries.find( (country) => {
-                        return country.alpha3Code === node
+                 * 'Finland -> Norway'.*/
+                const route = path
+                    .slice(1)
+                    .map( (node) => {
+                        return countries.find( (country) => {
+                            return country.alpha3Code === node
                     }).name;
                 }).join(' -> ');
 
