@@ -4,18 +4,43 @@ block content
     if current
         div.section
             div.container
+
+                //- A link back to the home page
                 a(href="/")
                     p Home
                 br
+
+                //- Country's name
                 h1.title.is-1= current.name
+
+                //- Country's flag
                 figure.image.is-128x128
                     img(src=current.flag, alt="Flag")
+
+                //- List country's neighbours
                 if borders
                     h3 Neighbours:
                         ul
                             each country in borders
                                 a(href="/country/" + country.alpha3Code.toLowerCase())
                                     li= country.name
+
+                //- Allows user to select a country from the dropdown
+                    menu and shows the shortest path to this country
+                br
+                p Show path to:
+                if data
+                    select
+                        each country in data
+                            option(value=country.alpha3Code)= country.name
+
+
+                //- A container for the route. Empty in the beginning,
+                    but is filled with route data by using the dropdown
+                    menu above.
+                br
+                br
+                h5.route.subtitle.is-5
 
 
     else
