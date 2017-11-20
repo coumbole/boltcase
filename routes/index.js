@@ -9,7 +9,14 @@ const api = 'https://restcountries.eu/rest/v2/';
 
 // API request options
 const options = {
-    uri : api + 'all?fields=name;alpha3Code;area;borders;population;flag;languages',
+    uri : api + 'all?fields=' +
+        'name;' +
+        'alpha3Code;' +
+        'area;' +
+        'borders;' +
+        'population;' +
+        'flag;' +
+        'languages',
     json : true
 };
 
@@ -19,23 +26,21 @@ const getCountryData = (options) => {
 
 
 // Renders the home page with a list of countries
-router.get('/', (req, res, next) => {
+router.get('/', (req, res) => {
 
     // Fetch data, if successful, render page
     getCountryData(options)
         .then( (countryData) => {
             res.render('index', { data: countryData});
     })
-        .catch( (error) => {
-            console.log('Country data not found');
-            console.log(error);
+        .catch( () => {
             res.render('index');
     });
 });
 
 
 // Renders a detail page with information about a country
-router.get('/country/:id/', (req, res, next) => {
+router.get('/country/:id/', (req, res) => {
 
     const countryCode = req.params.id.toUpperCase();
 
@@ -43,7 +48,7 @@ router.get('/country/:id/', (req, res, next) => {
 
         .then( (countries) => {
 
-            // Extract the current page's country's data from the dump
+            // Extract the current page's country's data from the data dump
             const thecountry = countries.find( (country) => {
                 return country.alpha3Code === countryCode;
             });
@@ -58,8 +63,8 @@ router.get('/country/:id/', (req, res, next) => {
                 data    : countries,
                 borders : neighbours });
 
-        }).catch( (error) => {
-            res.render('detail');
+        }).catch( () => {
+            res.render('detail' );
         });
 });
 
@@ -69,7 +74,7 @@ router.get('/country/:id/', (req, res, next) => {
  * It returns a string representing the shortest route from starting country
  * to target country as defined in the POST request's body data.
  */
-router.post('/country/:id/', (req, res, next) => {
+router.post('/country/:id/', (req, res) => {
 
     // Country data and neighbours are represented as a graph
     let graph = new Map();
@@ -78,21 +83,19 @@ router.post('/country/:id/', (req, res, next) => {
 
         .then( (countries) => {
 
-            /* Fill the graph with countries' codes as
-             * keys and their neighbours as values */
+            // Fill the graph with country data
             countries.forEach( (country) => {
                 graph.set(country.alpha3Code, country.borders);
             });
-
 
             /* Returns a map where the key is a value from the array
              * fromNodes and the value is an array of nodes that can be
              * reached from the given key. */
             const getMoves = (fromNodes) => {
-                let result = new Map()
+                let result = new Map();
                 return new Promise
                     .each(fromNodes, (fromNode) => {
-                        result.set(fromNode, graph.get(fromNode) || [])
+                        result.set(fromNode, graph.get(fromNode) || []);
                     })
                     .return(result)
             };
@@ -105,10 +108,7 @@ router.post('/country/:id/', (req, res, next) => {
             // Calculate the route and send it as a response to the client
             bfs.find().then( (path) => {
 
-                /* Instead of the 3 letter codes, we want the countries'
-                 * full names. Furthermore, instead of an array like
-                 * ['Finland', 'Norway'] we want a string such as
-                 * 'Finland -> Norway'.*/
+                // ['FIN', 'SWE'] => 'Finland -> Sweden'
                 const route = path
                     .slice(1)
                     .map( (node) => {
@@ -119,15 +119,13 @@ router.post('/country/:id/', (req, res, next) => {
 
                 res.send(route);
 
-            }).catch( (error) => {
+            }).catch( () => {
                 const route = 'No land route found';
                 res.send(route);
             });
 
         // Handle errors in data fetching
         }).catch( (error) => {
-            console.log('error');
-            console.log(error);
             res.send(error);
         });
 });
