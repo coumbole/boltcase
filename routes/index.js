@@ -7,7 +7,7 @@ const api = 'https://restcountries.eu/rest/v2/';
 
 // API request options
 const options = {
-    uri : api + 'all',
+    uri : api + 'all?fields=name;alpha3Code;area;borders;population;flag;languages',
     json : true
 };
 
@@ -26,7 +26,6 @@ router.get('/', (req, res, next) => {
         console.log(error);
     });
 });
-
 
 // GET detail page
 router.get('/country/:id/', (req, res, next) => {
@@ -54,7 +53,6 @@ router.get('/country/:id/', (req, res, next) => {
             res.render('detail', { current: thecountry, data: countries, borders: neighbours });
 
         // Handle errors
-            //// Handle errors
         }).catch( (error) => {
             res.render('detail');
         });

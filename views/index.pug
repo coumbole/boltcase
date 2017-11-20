@@ -1,18 +1,45 @@
 extends layout
 
+//- A mixin representing a single country item in the countrylist
+mixin country-item(country)
+
+    //- It's an <a> element containing a <li> element
+    a(href="country/" + country.alpha3Code.toLowerCase())
+
+        //- this function checks if object elem contains a
+            key-value pair iso630_1 : 'en'
+        -
+            function isEnglish(elem, index, array) {
+                return elem['iso639_1'] === 'en';
+            }
+            let hasEnglish = country.languages.some(isEnglish).toString();
+
+        //- The <li> contains several custom data-attributes according
+            to which the list is sorted.
+        li( data-english     = hasEnglish,
+            data-population  = country.population,
+            data-area        = country.area,
+            data-name        = country.name.toLowerCase())= country.name
+
+
 block content
     div.section
         div.container
             div
-                button.button Sort by name
-                button.button Sort by population
-                button.button Sort by area
-                button.button Only English speaking countries
+                button.button#name Sort by name
+                button.button#population Sort by population
+                button.button#area Sort by area
+                button.button#english Only English speaking countries
+
             div
                 ul
+                    //- Only try to output the list of countries if the
+                        country data was fetched correctly
                     if data
+
+                        //- Loop through each item in the country data
+                            and render them using the mixin above
                         each country in data
-                            a(href="country/" + country.alpha3Code.toLowerCase())
-                                li= country.name
+                            +country-item(country)
                     else
                         li No countries
