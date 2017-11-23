@@ -23,12 +23,12 @@ $(document).ready( () => {
                 const keyA = $(first)
                     .children()
                     .first()
-                    .data(sortKey);
+                    .data(sortKey) || 0;
 
                 const keyB = $(second)
                     .children()
                     .first()
-                    .data(sortKey);
+                    .data(sortKey) || 0;
 
                 // Compare the two values
                 if (keyA < keyB) return -1;
